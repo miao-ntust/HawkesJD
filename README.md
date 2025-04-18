@@ -1,4 +1,4 @@
-# Jump-Diffusion Model with Hawkes Intensity
+# Exact Analytical Option Pricing Formula Under a Jump-Diffusion Model with Hawkes Intensity
 
 ## Hawkes Process
 
