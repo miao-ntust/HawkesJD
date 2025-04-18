@@ -33,6 +33,11 @@ This function calculates the probability mass function (PMF) of the Hawkes proce
 - A column vector of size $n+1$ (for $n = 0$ to $N$)
   - `probUC`: unconditional probability
   - `probC`: conditional probability
+ 
+**Parameter Constraints**
+- For $N = 70$, $\beta \leq 5$
+- For $N = 50$, $\beta \leq 9$
+- No restriction on $\alpha \cdot \beta$, but large $\beta$ may cause computational issues
 
 ## Option Price of HJD
 
