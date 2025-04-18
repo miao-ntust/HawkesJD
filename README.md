@@ -1,5 +1,5 @@
 # Exact Analytical Option Pricing Formula Under a Jump-Diffusion Model with Hawkes Intensity
-
+This repository includes code and figures for the study mentioned above. For additional inquiries, please contact the corresponding author.
 ## Hawkes Process
 
 The intensity of a Hawkes process is specified as
