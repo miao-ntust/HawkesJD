@@ -43,13 +43,13 @@ This function calculates the probability mass function (PMF) of the Hawkes proce
 ## Retrun Distribution of HJD
 The logarithmic return of the jump-diffusion model can be expressed as
 
-\[
+$$
 R_T = \ln\!\Bigl(\frac{S_T}{S_0}\Bigr)
     = \Bigl(r - \tfrac{\sigma^2}{2}
       - \nu_T \, e^{\theta + \tfrac{\delta^2}{2}}\Bigr)T
     + \sigma W_T
     + \sum_{j=1}^{N_T}\ln Y_j.
-\]
+$$
 
 Let \(R_n\) denote the return \(R_T\) conditional on \(N_T = n\).  Then
 
