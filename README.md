@@ -39,6 +39,23 @@ This function calculates the probability mass function (PMF) of the Hawkes proce
 - For $N = 50$, $\beta \leq 9$
 - No restriction on $\alpha \cdot \beta$, but large $\beta$ may cause computational issues
 
+
+## Retrun Distribution of HJD
+The logarithmic return of the jump-diffusion model can be expressed as
+\begin{equation}
+    R_T = \ln\left(\frac{S_T}{S_0}\right) = \left(r-\frac{\sigma^2}{2}-\nu_T(e^{\theta+\frac{\delta^2}{2}})\right)T + \sigma W_T + \sum_{j=1}^{N_T}\ln Y_j.
+\end{equation}
+Let \( R_n \) denote the return \( R_T \) conditional on \( N_T = n \), then \( R_n \sim \mathrm{N}(a_n, b_n^2) \) with
+\begin{eqnarray}
+    a_n &=& \left(r-\frac{\sigma^2}{2}-  \nu_T(e^{\theta+\frac{\delta^2}{2}})   \right)T + n\theta, \nonumber\\[5pt]
+    b_n^2 &=& \sigma^2 T + n\delta^2. \nonumber
+\end{eqnarray}
+The PDF of \( R_T \) takes a mixture form of normal distributions as shown below:
+\begin{eqnarray}
+    f_{R_T}(y) &=& \sum_{n=0}^\infty \mathrm{P}(N_T=n)\frac{1}{\sqrt{2\pi}b_n}e^{\frac{-(y-a_n)^2}{2b_n^2}}.\nonumber
+\end{eqnarray}
+
+
 ## Option Price of HJD
 
 The call option price under the Hawkes Jump-Diffusion (HJD) model is given by
