@@ -1,4 +1,45 @@
-function [P, Pc] = hawkesPMF(r, a, b, t, lambda0, N)
+function [PMF, Tail, Price, MVSK] = hwakes(S0, K, r, q, sigma, t, gamma, delta, lambda, v, a, b, N)
+
+na = numel(a);
+
+PMF = zeros(N + 1, na + 1);
+PMF(:, 1) = poisPMF(lambda, t, N);
+
+Price = cell(10, 18);
+call = zeros(na + 2, 3);
+iv = zeros(na + 2, 3);
+call(1, :) = callMJD(S0, K, r, q, sigma, t, gamma, delta, PMF(:, 1));
+iv(1, :) = calIV(call(1, :), S0, K, r, q, t);
+sigBS = sqrt((gamma ^ 2 + delta ^ 2) * lambda + sigma ^ 2);
+call(2, :) = callBS(S0, K, r, q, sigBS, t);
+iv(2, :) = sigBS;
+
+MVSK = zeros(na + 1, 4);
+MVSK(1, :) = mvskMJD(r, q, sigma, t, 0, delta, PMF(:, 1));
+for ia = 1 : na
+    PMF(:, ia + 1) = hawkesPMF(v(ia), a(ia), b(ia), t, N);
+    call(ia + 2, :)= callMJD(S0, K, r, q, sigma, t, gamma, delta, PMF(:, ia + 1));
+    iv(ia + 2, :) = calIV(call(ia + 2, :), S0, K, r, q, t);
+    MVSK(ia + 1, :) = mvskMJD(r, q, sigma, t, 0, delta, PMF(:, ia + 1));
+end
+for iK = 1 : 3
+    Price{1, 6 * iK - 5} = num2str(call(1, iK), '%.3f');
+    Price{1, 6 * iK - 2} = ['$', num2str(iv(1, iK) * 100, '%.3f'), '%$'];
+    Price{2, 6 * iK - 5} = ['(', num2str(call(2, iK), '%.3f'), ')'];
+    Price{2, 6 * iK - 2} = ['($', num2str(sigBS * 100, '%.3f'), '%$)'];
+    for ia = 1 : 8
+        Price{ia + 2, 6 * iK - 5} =num2str(call(ia + 2, iK), '%.3f');
+        Price{ia + 2, 6 * iK - 4} =['$', num2str((call(ia + 2, iK) - call(1, iK)) ./ call(1, iK) * 100, '%.3f'), '%$'];
+        Price{ia + 2, 6 * iK - 2} =['$', num2str(iv(ia + 2, iK) * 100, '%.3f'), '%$'];
+        Price{ia + 2, 6 * iK - 1} =['$', num2str((iv(ia + 2, iK) - iv(1, iK)) ./ iv(1, iK) * 100, '%.3f'), '%$'];
+    end
+end
+
+Tail = 1 - sum(PMF, 1);
+
+end
+
+function P = hawkesPMF(r, a, b, t, N)
 
 n = (1 : N)';
 
@@ -123,14 +164,8 @@ BinomH = gamma(nk + 1) ./ gamma(k1 + 1) ./ gamma(k2 + 1) ./ gamma(k3 + 1);
 theta = (-1) .^ (k2 == 0) * a .* (k2 <= 1);
 H = r * (L - 1 / b * accumarray(nk, BinomH .* www(k1 + 1) .* ((w(k2 + 1) - theta) .* x(k3 + 1) - (ww(k2 + 1) - theta) .* xx(k3 + 1))));
 
-Mc = H - L * lambda0;
-
 BM = bellPoly(b * L / (a * b - 1));
 M = H - r * (L + 1 / b * accumarray(nn, (-1) .^ (kk - 1) .* gamma(kk) ./ ((1 - exp(-b * t)) / (a * b - 1) + 1) .^ kk .* BM(nkB)));
-
-Pc = zeros(N + 1, 1);
-Pc(1) = exp((r - lambda0) / b * (1 - exp(-b * t)) - r * t);
-Pc(2 : end) = 1 ./ gamma(n + 1) * Pc(1) .* sum(bellPoly(Mc), 2);
 
 P = zeros(N + 1, 1);
 P(1) = exp(-r * t) * ((1 - exp(-b * t)) / (a * b - 1) + 1) ^ (-r / b);
@@ -154,5 +189,116 @@ end
 
 B(:, 1) = [];
 B(1, :) = [];
+
+end
+
+function P = poisPMF(lambda, t, N)
+
+n = (0 : N)';
+P = exp(n * log(lambda * t) - lambda * t - gammaln(n + 1));
+
+end
+
+function price = callMJD(S0, K, r, q, sigma, t, gamma, delta, jumpProb)
+% Call price of JD
+%
+% Input:
+%   K: row vector
+%   jumpProb: column vector
+%
+% Output: price(n, K)
+
+N = numel(jumpProb) - 1;
+n = (0 : N)';
+
+muX = n * gamma;
+varX = n * delta .^ 2;
+
+eta = log(sum(jumpProb .* exp(muX + varX / 2), 1));
+mu = r - q - eta / t;
+muD = (mu - sigma ^ 2 / 2) * t;
+varD = sigma ^ 2 * t;
+
+muR = muD + muX;
+varR = varD + varX;
+
+sigmahat = sqrt(varR / t);
+rhat = muR / t + q + sigmahat .^ 2 / 2;
+
+price = sum(jumpProb .* exp(-(r - rhat) * t) .* callBS(S0, K, rhat, q, sigmahat, t), 1);
+
+end
+
+function iv = calIV(price, S0, K, r, q, t)
+
+S = S0 * exp(-q * t);
+X = K * exp(-r * t);
+
+a = (S + X) * t;
+b = sqrt(8 * pi * t) * ((S - X) / 2 - price);
+c = 2 * (S - X) .* log(S ./ X);
+temp = max(b .^ 2 - 4 * a .* c, 0);
+iv0 = (-b + sqrt(temp)) ./ (2 * a);
+
+iv = iv0;
+f = @(x) callBS(S0, K, r, q, x, t) - price;
+fd = @(x) vegaBS(S0, K, r, q, x, t);
+while max(abs(f(iv))) > 1e-12
+    iv0 = iv;
+	iv = iv0 - f(iv0) ./ fd(iv0);
+end
+
+end
+
+function call = callBS(S0, K, r, q, sigma, t)
+
+d1 = (log(S0 ./ K) + (r - q + sigma .^ 2 / 2) .* t) ./ (sigma .* sqrt(t));
+d2 = d1 - sigma .* sqrt(t);
+nd1 = 0.5 * erfc(-d1 / sqrt(2));
+nd2 = 0.5 * erfc(-d2 / sqrt(2));
+call = S0 .* exp(-q .* t) .* nd1 - K .* exp(-r .* t) .* nd2;
+
+end
+
+function vega = vegaBS(S0, K, r, q, sigma, t)
+
+d1 = (log(S0 ./ K) + (r - q + sigma .^ 2 / 2) .* t) ./ (sigma .* sqrt(t));
+vega = S0 * exp(-q * t - d1 .^ 2 / 2) .* sqrt(t / (2 * pi));
+
+end
+
+function mvsk = mvskMJD(r, q, sigma, t, gamma, delta, jumpProb)
+% Return mvsk of JD
+%
+% Input:
+%   jumpProb: column vector
+%
+% Output:
+%   mvsk: row vector
+
+N = numel(jumpProb) - 1;
+n = (0 : N)';
+
+muX = n * gamma;
+varX = n * delta .^ 2;
+
+eta = log(sum(jumpProb .* exp(muX + varX / 2), 1));
+mu = r - q - eta / t;
+muD = (mu - sigma ^ 2 / 2) * t;
+varD = sigma ^ 2 * t;
+
+muR = muD + muX;
+varR = varD + varX;
+
+ER1 = sum(jumpProb .* muR, 1);
+ER2 = sum(jumpProb .* (muR .^ 2 + varR), 1);
+ER3 = sum(jumpProb .* (muR .^ 3 + 3 * muR .* varR), 1);
+ER4 = sum(jumpProb .* (muR .^ 4 + 6 * muR .^ 2 .* varR + 3 * varR .^ 2), 1);
+
+mvsk = zeros(1, 4);
+mvsk(1) = ER1;
+mvsk(2) = ER2 - ER1 .^ 2;
+mvsk(3) = (ER3 - 3 * ER1 .* ER2 + 2 * ER1 .^ 3) ./ mvsk(2) .^ 1.5;
+mvsk(4) = (ER4 - 4 * ER1 .* ER3 + 6 * ER1 .^ 2 .* ER2 - 3 * ER1 .^ 4) ./ mvsk(2) .^ 2;
 
 end
