@@ -60,13 +60,12 @@ $$
 with
 
 $$
-$$
-a_n &= \Bigl(r - \tfrac{\sigma^2}{2}
-        - \nu_T \, e^{\theta + \tfrac{\delta^2}{2}}\Bigr)T + n\,\theta,\\[6pt]
-b_n^2 &= \sigma^2 T + n\,\delta^2.
+a_n = \Bigl(r - \tfrac{\sigma^2}{2}
+        - \nu_T \, e^{\theta + \tfrac{\delta^2}{2}}\Bigr)T + n\,\theta,
+b_n^2 = \sigma^2 T + n\,\delta^2.
 $$
 
-The PDF of \(R_T\) is a mixture of normals:
+The PDF of $R_T$ is a mixture of normals:
 
 $$
 f_{R_T}(y)
