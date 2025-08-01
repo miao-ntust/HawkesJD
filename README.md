@@ -58,6 +58,34 @@ The probability density function (PDF) of $R_T$ is a mixture of normal distribut
 $$ f_{R_T}(y) = \sum_{n=0}^{\infty} P(N_T = n) \frac{1}{\sqrt{2\pi} b_n} \exp\left(-\frac{(y - a_n)^2}{2 b_n^2}\right). $$
 
 
+### Function: `returnMJD.m`
+
+This function calculates the probability density function (PDF) and cumulative distribution function (CDF) of log-returns under the Merton Jump-Diffusion model.
+
+**Usage:**
+```matlab
+[f, F] = returnMJD(y, r, q, sigma, t, gamma, delta, jumpProb)
+```
+
+**Input:**
+- `y`: row vector of log-return values at which to evaluate the PDF/CDF
+- `r`: risk-free interest rate
+- `q`: dividend yield  
+- `sigma`: volatility of the underlying diffusion process
+- `t`: time horizon
+- `gamma`: mean jump size parameter
+- `delta`: standard deviation of jump sizes
+- `jumpProb`: column vector of probabilities P(N_T = n) for n = 0, 1, ..., N
+
+**Output:**
+- `f`: column vector containing PDF values f(y) for each y
+- `F`: column vector containing CDF values F(y) for each y
+
+**Model Description:**
+The function implements the Merton Jump-Diffusion model where log-returns follow:
+- A geometric Brownian motion with drift and volatility
+- Compound Poisson jumps with normally distributed jump sizes
+- Jump compensation to ensure risk-neutral pricing
 
 
 ## Option Price of HJD
