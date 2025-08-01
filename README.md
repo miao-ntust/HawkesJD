@@ -41,38 +41,37 @@ This function calculates the probability mass function (PMF) of the Hawkes proce
 
 
 ## Retrun Distribution of HJD
-The logarithmic return of the jump-diffusion model can be expressed as
+The logarithmic return of the jump–diffusion model can be written as
 
 $$
-R_T = \ln\!\Bigl(\frac{S_T}{S_0}\Bigr)
-    = \Bigl(r - \tfrac{\sigma^2}{2}
-      - \nu_T \, e^{\theta + \tfrac{\delta^2}{2}}\Bigr)T
-    + \sigma W_T
-    + \sum_{j=1}^{N_T}\ln Y_j.
+R_T = \ln\!\left(\frac{S_T}{S_0}\right)
+= \left(r - \tfrac{\sigma^2}{2} - \nu_T\, e^{\theta + \tfrac{\delta^2}{2}}\right)T
++ \sigma W_T
++ \sum_{j=1}^{N_T}\ln Y_j .
 $$
 
-Let $R_n$ denote the return $R_T$ conditional on $N_T = n$.  Then
+Let $R_n$ denote $R_T$ conditional on $N_T = n$. Then
 
 $$
-R_n \sim \mathcal{N}(a_n,\,b_n^2),
+R_n \sim \mathcal{N}(a_n, b_n^2),
 $$
 
 with
 
 $$
-a_n = \Bigl(r - \tfrac{\sigma^2}{2}
-        - \nu_T \, e^{\theta + \tfrac{\delta^2}{2}}\Bigr)T + n\,\theta,
-b_n^2 = \sigma^2 T + n\,\delta^2.
+a_n = \left(r - \tfrac{\sigma^2}{2} - \nu_T\, e^{\theta + \tfrac{\delta^2}{2}}\right)T + n\,\theta,
+\qquad
+b_n^2 = \sigma^2 T + n\,\delta^2 .
 $$
 
 The PDF of $R_T$ is a mixture of normals:
 
 $$
-f_{R_T}(y)
-= \sum_{n=0}^{\infty} P(N_T = n)\,
-  \frac{1}{\sqrt{2\pi}\,b_n}
-  \exp\Bigl(-\tfrac{(y - a_n)^2}{2\,b_n^2}\Bigr).
+f_{R_T}(y) = \sum_{n=0}^{\infty} P(N_T = n)\,
+\frac{1}{\sqrt{2\pi}\,b_n}\,
+\exp\!\left(-\frac{(y - a_n)^2}{2\,b_n^2}\right).
 $$
+
 
 
 
