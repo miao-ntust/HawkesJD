@@ -68,7 +68,7 @@ This function calculates the probability density function (PDF) and cumulative d
 ```
 
 **Input:**
-- `y`: row vector of log-return values at which to evaluate the PDF/CDF
+- `y`: log-return values at which to evaluate the PDF/CDF
 - `r`: risk-free interest rate
 - `q`: dividend yield  
 - `sigma`: volatility of the underlying asset
@@ -78,8 +78,8 @@ This function calculates the probability density function (PDF) and cumulative d
 - `jumpProb`: probability of $N_T = n$
 
 **Output:**
-- `f`: column vector containing PDF values f(y) for each y
-- `F`: column vector containing CDF values F(y) for each y
+- `f`: PDF values f(y) for each y
+- `F`: CDF values F(y) for each y
 
 
 
