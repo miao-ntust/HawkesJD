@@ -60,7 +60,7 @@ $$ f_{R_T}(y) = \sum_{n=0}^{\infty} P(N_T = n) \frac{1}{\sqrt{2\pi} b_n} \exp\le
 
 ### Function: `returnMJD.m`
 
-This function calculates the probability density function (PDF) and cumulative distribution function (CDF) of log-returns under the HJD model.
+This function calculates the probability density function (PDF) and cumulative distribution function (CDF) of log-returns under the Merton jump-diffusion model with Hawkes intensity.
 
 **Usage:**
 ```matlab
