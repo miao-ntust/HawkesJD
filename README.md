@@ -40,6 +40,8 @@ This function computes the probability mass function (PMF) of the Hawkes process
 - For $N = 50$: requires $\beta \leq 9$
 - No constraint on $\alpha \cdot \beta$, however large $\beta$ values may cause numerical instability
 
+**Example:**
+`example1.m` demonstrates the usage and corresponds to partial results in Table 1 of the paper.
 
 ## Option Pricing under HJD
 
@@ -58,9 +60,6 @@ $$
 $$
 \eta = \ln \left(\sum_{n=0}^\infty \left[\mathrm{P}(N_T = n) \exp\left(n \cdot \theta +\frac{n \cdot \delta^2}{2}\right)\right]\right)
 $$
-
-**Example:**
-`example1.m` demonstrates the usage and corresponds to partial results in Table 1 of the paper.
 
 ### Function: `callJD.m`
 
