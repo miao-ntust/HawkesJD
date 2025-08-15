@@ -12,31 +12,6 @@ $$
 
 where $\gamma$ represents the baseline intensity and $\lambda_0$ denotes the initial intensity. At each jump occurrence time $t_k$ (for $k = 1,2,\ldots$), the intensity process $\lambda_t$ experiences an upward jump of magnitude $Y_k$. These jump magnitudes follow an exponential distribution with cumulative distribution function $G(y) = 1-e^{-\alpha y}$ and expected value $1/\alpha$. Each historical jump contributes to the current intensity through an exponential decay mechanism with decay rate $\beta$.
 
-### Functions: `hawkesSim.m` and `hawkesSimC.m`
-
-These functions perform Monte Carlo simulation of Hawkes processes for both unconditional and conditional scenarios.
-
-**Usage:**
-
-```matlab
-Pi = hawkesSim(r, a, b, t, paths)
-```
-
-```matlab
-Pi = hawkesSimC(r, lambda0, a, b, t, paths)
-```
-
-**Parameters:**
-- `r`: baseline intensity parameter
-- `a`: jump intensity rate
-- `b`: decay rate parameter
-- `t`: time vector (row vector)
-- `lambda0`: initial intensity value (for conditional simulation only)
-- `paths`: number of simulation paths
-
-**Returns:**
-- `Pi`: simulated process values with dimensions (N, t)
-
 ### Function: `hawkesPMF.m`
 
 This function computes the probability mass function (PMF) of the Hawkes process, specifically $\mathrm{P}(N_t = n)$, using a closed-form analytical expression.
@@ -65,46 +40,7 @@ This function computes the probability mass function (PMF) of the Hawkes process
 - For $N = 50$: requires $\beta \leq 9$
 - No constraint on $\alpha \cdot \beta$, however large $\beta$ values may cause numerical instability
 
-## Return Distribution under HJD
-
-The logarithmic return under the jump-diffusion model is expressed as:
-
-$$ R_T = \ln\left(\frac{S_T}{S_0}\right) = \left(r - \frac{\sigma^2}{2} - \nu_T e^{\theta + \frac{\delta^2}{2}}\right)T + \sigma W_T + \sum_{j=1}^{N_T} \ln Y_j $$
-
-Let $R_n$ denote the conditional return $R_T$ given that $N_T = n$. The distribution of $R_n$ follows a normal distribution:
-
-$$ R_n \sim \mathcal{N}(a_n, b_n^2) $$
-
-with moment parameters:
-
-$$ a_n = \left(r - \frac{\sigma^2}{2} - \nu_T e^{\theta + \frac{\delta^2}{2}}\right)T + n \theta, \quad b_n^2 = \sigma^2 T + n \delta^2 $$
-
-The probability density function (PDF) of $R_T$ is characterized as a mixture of normal distributions:
-
-$$ f_{R_T}(y) = \sum_{n=0}^{\infty} P(N_T = n) \frac{1}{\sqrt{2\pi} b_n} \exp\left(-\frac{(y - a_n)^2}{2 b_n^2}\right) $$
-
-### Function: `returnMJD.m`
-
-This function calculates both the probability density function (PDF) and cumulative distribution function (CDF) of logarithmic returns under the Merton jump-diffusion model with Hawkes intensity.
-
-**Usage:**
-```matlab
-[f, F] = returnMJD(y, r, q, sigma, t, gamma, delta, jumpProb)
-```
-
-**Parameters:**
-- `y`: logarithmic return values for evaluation
-- `r`: risk-free interest rate
-- `q`: dividend yield rate
-- `sigma`: volatility of the underlying asset
-- `t`: time to maturity
-- `gamma`: mean jump size parameter
-- `delta`: standard deviation of jump sizes
-- `jumpProb`: probability distribution of $N_T = n$
-
-**Returns:**
-- `f`: PDF values $f(y)$ evaluated at each point in `y`
-- `F`: CDF values $F(y)$ evaluated at each point in `y`
+example1.m 示範如何使用，對應到論文中Table 1 中部分的結果
 
 ## Option Pricing under HJD
 
@@ -123,6 +59,8 @@ $$
 $$
 \eta = \ln \left(\sum_{n=0}^\infty \left[\mathrm{P}(N_T = n) \exp\left(n \cdot \theta +\frac{n \cdot \delta^2}{2}\right)\right]\right)
 $$
+** Example:**
+'example1.m' demonstrates the usage and corresponds to partial results in Table 1 of the paper.
 
 ### Function: `callJD.m`
 
@@ -147,3 +85,6 @@ price = callJD(S0, K, r, q, sigma, t, theta, delta, jumpProb)
 
 **Returns:**
 - `price`: European call option price
+
+** Example:**
+'example2.m' demonstrates the usage and corresponds to partial results in Table 2 of the paper.
