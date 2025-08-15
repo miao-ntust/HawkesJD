@@ -58,8 +58,9 @@ $$
 $$
 \eta = \ln \left(\sum_{n=0}^\infty \left[\mathrm{P}(N_T = n) \exp\left(n \cdot \theta +\frac{n \cdot \delta^2}{2}\right)\right]\right)
 $$
-** Example:**
-'example1.m' demonstrates the usage and corresponds to partial results in Table 1 of the paper.
+
+**Example:**
+`example1.m` demonstrates the usage and corresponds to partial results in Table 1 of the paper.
 
 ### Function: `callJD.m`
 
@@ -85,5 +86,5 @@ price = callJD(S0, K, r, q, sigma, t, theta, delta, jumpProb)
 **Returns:**
 - `price`: European call option price
 
-** Example:**
-'example2.m' demonstrates the usage and corresponds to partial results in Table 2 of the paper.
+**Example:**
+`example2.m` demonstrates the usage and corresponds to partial results in Table 2 of the paper.
