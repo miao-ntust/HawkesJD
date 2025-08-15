@@ -40,7 +40,6 @@ This function computes the probability mass function (PMF) of the Hawkes process
 - For $N = 50$: requires $\beta \leq 9$
 - No constraint on $\alpha \cdot \beta$, however large $\beta$ values may cause numerical instability
 
-example1.m 示範如何使用，對應到論文中Table 1 中部分的結果
 
 ## Option Pricing under HJD
 
